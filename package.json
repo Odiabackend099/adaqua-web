@@ -12,15 +12,19 @@
   "dependencies": {
     "form-data": "4.0.0",
     "formidable": "3.5.1",
+    "lucide-react": "^0.544.0",
     "next": "14.2.5",
     "node-fetch": "2.7.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "typescript": "^5.0.0"
+    "@types/node": "^20.19.14",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=18.17"
   }
 }
