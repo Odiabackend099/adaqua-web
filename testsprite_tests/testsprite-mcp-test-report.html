@@ -1,0 +1,410 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Markdown Preview</title>
+      <style>
+        body {
+          font-family: sans-serif;
+          padding: 40px;
+          line-height: 1.6;
+          background: #fdfdfd;
+          color: #333;
+        }
+        pre {
+          background: #f4f4f4;
+          padding: 10px;
+          border-radius: 5px;
+          overflow-x: auto;
+        }
+        code {
+          font-family: monospace;
+          background: #eee;
+          padding: 2px 4px;
+        }
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          margin-top: 20px;
+        }
+        th, td {
+          border: 1px solid #ccc;
+          padding: 8px 12px;
+          text-align: left;
+        }
+        th {
+          background-color: #f2f2f2;
+          font-weight: bold;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>TestSprite AI Testing Report(MCP)</h1>
+<hr>
+<h2>1️⃣ Document Metadata</h2>
+<ul>
+<li><strong>Project Name:</strong> voice-assistant</li>
+<li><strong>Version:</strong> 1.0.0</li>
+<li><strong>Date:</strong> 2025-01-14</li>
+<li><strong>Prepared by:</strong> TestSprite AI Team</li>
+</ul>
+<hr>
+<h2>2️⃣ Requirement Validation Summary</h2>
+<h3>Requirement: Voice UI Rendering and Basic Functionality</h3>
+<ul>
+<li><strong>Description:</strong> Core voice interface components must render properly with interactive controls for conversation initiation.</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC001</li>
+<li><strong>Test Name:</strong> Start Conversation Flow with Single Click</li>
+<li><strong>Test Code:</strong> <a href="./TC001_Start_Conversation_Flow_with_Single_Click.py">code_file</a></li>
+<li><strong>Test Error:</strong> The /voice page is completely empty and no UI elements or interactive controls are rendered. This prevents verifying the continuous listen-speak-response loop initiation or UI transitions, indicating a possible frontend rendering or routing issue.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> Critical rendering failure - the voice page is empty with no visible UI elements. Resource loading errors (ERR_EMPTY_RESPONSE) indicate build or deployment issues. Fast Refresh warnings suggest React component tree problems.</li>
+</ul>
+<hr>
+<h4>Test 2</h4>
+<ul>
+<li><strong>Test ID:</strong> TC002</li>
+<li><strong>Test Name:</strong> Continuous Conversation Loop Functionality</li>
+<li><strong>Test Code:</strong> <a href="./TC002_Continuous_Conversation_Loop_Functionality.py">code_file</a></li>
+<li><strong>Test Error:</strong> The conversation loop test was partially completed. The UI successfully transitioned through idle, Listening, and cancel states as expected. However, due to inability to simulate recognized speech input or post recognized text to /api/chat, the full conversation loop including AI response streaming, TTS playback, and automatic UI state transitions could not be verified.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> UI state transitions work correctly, but speech input simulation is blocked. Need proper integration testing for end-to-end conversation loops.</li>
+</ul>
+<hr>
+<h4>Test 3</h4>
+<ul>
+<li><strong>Test ID:</strong> TC004</li>
+<li><strong>Test Name:</strong> Stop Conversation Sets UI to Idle and Stops Audio &amp; Recognition</li>
+<li><strong>Test Code:</strong> <a href="./TC004_Stop_Conversation_Sets_UI_to_Idle_and_Stops_Audio__Recognition.py">code_file</a></li>
+<li><strong>Test Error:</strong> The test failed due to the /voice page not rendering, resulting in missing UI elements such as the stop button. Thus, it was impossible to verify that clicking the stop button halts audio, speech recognition, and resets UI state to Idle.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> Same rendering issue as other tests - empty page prevents stop button functionality verification.</li>
+</ul>
+<hr>
+<h4>Test 4</h4>
+<ul>
+<li><strong>Test ID:</strong> TC009</li>
+<li><strong>Test Name:</strong> UI State Transitions Follow Correct Sequence</li>
+<li><strong>Test Code:</strong> <a href="./TC009_UI_State_Transitions_Follow_Correct_Sequence.py">code_file</a></li>
+<li><strong>Test Error:</strong> The voice page at http://localhost:3000/voice is completely empty with no visible UI elements or microphone button. Therefore, it was not possible to verify the UI state transitions for Idle, Listening, Thinking, Speaking, and back to Idle on stop.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> Cannot verify UI state transitions due to empty page rendering issue.</li>
+</ul>
+<hr>
+<h4>Test 5</h4>
+<ul>
+<li><strong>Test ID:</strong> TC014</li>
+<li><strong>Test Name:</strong> Captions Update Correctly with Interim and Final Recognition Results</li>
+<li><strong>Test Code:</strong> <a href="./TC014_Captions_Update_Correctly_with_Interim_and_Final_Recognition_Results.py">code_file</a></li>
+<li><strong>Test Error:</strong> The voice test page is empty with no microphone button or captions visible, so the test for verifying partial and final captions during speech cannot be performed.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> Empty page prevents caption functionality testing.</li>
+</ul>
+<hr>
+<h3>Requirement: Audio and Speech Recognition Features</h3>
+<ul>
+<li><strong>Description:</strong> Core audio functionality including barge-in support, microphone permissions, and speech recognition.</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC003</li>
+<li><strong>Test Name:</strong> Barge-In Support Interrupts Audio Playback and Restarts Recognition</li>
+<li><strong>Test Code:</strong> <a href="./TC003_Barge_In_Support_Interrupts_Audio_Playback_and_Restarts_Recognition.py">code_file</a></li>
+<li><strong>Test Error:</strong></li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> Low</li>
+<li><strong>Analysis / Findings:</strong> Barge-in functionality works correctly - audio stops within 300ms when user starts speaking and speech recognition restarts promptly.</li>
+</ul>
+<hr>
+<h4>Test 2</h4>
+<ul>
+<li><strong>Test ID:</strong> TC005</li>
+<li><strong>Test Name:</strong> Mic Access Denied Error Handling</li>
+<li><strong>Test Code:</strong> <a href="./TC005_Mic_Access_Denied_Error_Handling.py">code_file</a></li>
+<li><strong>Test Error:</strong></li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> Low</li>
+<li><strong>Analysis / Findings:</strong> Microphone permission denial is handled correctly with clear error messages and prevents conversation from starting.</li>
+</ul>
+<hr>
+<h4>Test 3</h4>
+<ul>
+<li><strong>Test ID:</strong> TC008</li>
+<li><strong>Test Name:</strong> Audio Unlock Utility Handles Autoplay Restriction with Retry and Notification</li>
+<li><strong>Test Code:</strong></li>
+<li><strong>Test Error:</strong> Test execution timed out after 15 minutes</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> Medium</li>
+<li><strong>Analysis / Findings:</strong> Audio unlock utility test timed out, indicating potential issues with autoplay restriction handling or test environment problems.</li>
+</ul>
+<hr>
+<h3>Requirement: Backend API Integration</h3>
+<ul>
+<li><strong>Description:</strong> Server-side APIs for TTS proxy and chat streaming must function correctly.</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC006</li>
+<li><strong>Test Name:</strong> TTS Proxy Returns Playable Audio within Performance Requirements</li>
+<li><strong>Test Code:</strong> <a href="./TC006_TTS_Proxy_Returns_Playable_Audio_within_Performance_Requirements.py">code_file</a></li>
+<li><strong>Test Error:</strong> The /api/tts endpoint could not be verified as it returns 404 Not Found errors on all tested URLs including localhost and tts-api.odia.dev. No playable audio was received and TTFB could not be measured within 3 seconds. The endpoint appears to be unavailable or misconfigured.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> TTS endpoint returns 502 Bad Gateway and 404 Not Found errors. Upstream TTS service appears to be unavailable or misconfigured.</li>
+</ul>
+<hr>
+<h4>Test 2</h4>
+<ul>
+<li><strong>Test ID:</strong> TC007</li>
+<li><strong>Test Name:</strong> Fallback SSE Chat Stream Works without OpenAI API Key</li>
+<li><strong>Test Code:</strong> <a href="./TC007_Fallback_SSE_Chat_Stream_Works_without_OpenAI_API_Key.py">code_file</a></li>
+<li><strong>Test Error:</strong> The test verified that when OPENAI_API_KEY is absent, the voice input UI is functional and ready to start voice queries. However, due to environment limitations, actual voice queries to trigger the chat SSE endpoint and verify the fallback stub streaming response and conversation continuation were not performed.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> Medium</li>
+<li><strong>Analysis / Findings:</strong> UI works without OpenAI key, but full conversation loop testing was limited by environment constraints.</li>
+</ul>
+<hr>
+<h4>Test 3</h4>
+<ul>
+<li><strong>Test ID:</strong> TC013</li>
+<li><strong>Test Name:</strong> Unknown Endpoint Error Handling on TTS Proxy API</li>
+<li><strong>Test Code:</strong> <a href="./TC013_Unknown_Endpoint_Error_Handling_on_TTS_Proxy_API.py">code_file</a></li>
+<li><strong>Test Error:</strong></li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> Low</li>
+<li><strong>Analysis / Findings:</strong> TTS proxy API handles unknown endpoints gracefully with appropriate error responses.</li>
+</ul>
+<hr>
+<h4>Test 4</h4>
+<ul>
+<li><strong>Test ID:</strong> TC016</li>
+<li><strong>Test Name:</strong> Server-Sent Events Chat API Handles SSE Disconnects Gracefully</li>
+<li><strong>Test Code:</strong> <a href="./TC016_Server_Sent_Events_Chat_API_Handles_SSE_Disconnects_Gracefully.py">code_file</a></li>
+<li><strong>Test Error:</strong></li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> Low</li>
+<li><strong>Analysis / Findings:</strong> SSE chat API handles disconnects gracefully with proper error handling and retry mechanisms.</li>
+</ul>
+<hr>
+<h3>Requirement: Development and Deployment</h3>
+<ul>
+<li><strong>Description:</strong> Development environment setup and deployment processes must work correctly.</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC010</li>
+<li><strong>Test Name:</strong> Ensure No Secret Environment Variables Exposed in Client</li>
+<li><strong>Test Code:</strong> <a href="./TC010_Ensure_No_Secret_Environment_Variables_Exposed_in_Client.py">code_file</a></li>
+<li><strong>Test Error:</strong> The /voice page and main app page are empty with no visible UI elements or interactive controls. Attempts to access production build artifacts directly failed. No network requests or console logs were captured to analyze for secret exposure.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> Cannot verify secret exposure due to empty page rendering. Need access to production build artifacts for proper security analysis.</li>
+</ul>
+<hr>
+<h4>Test 2</h4>
+<ul>
+<li><strong>Test ID:</strong> TC011</li>
+<li><strong>Test Name:</strong> Development PowerShell Setup Script Executes Successfully</li>
+<li><strong>Test Code:</strong> <a href="./TC011_Development_PowerShell_Setup_Script_Executes_Successfully.py">code_file</a></li>
+<li><strong>Test Error:</strong> The web page at http://localhost:3000/ is empty with no interactive elements to interact with. To proceed with the task, the PowerShell development setup script 'scripts/dev.ps1' needs to be run on a Windows machine manually or via an appropriate environment.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> High</li>
+<li><strong>Analysis / Findings:</strong> PowerShell setup script needs to be run manually in Windows environment to complete development setup.</li>
+</ul>
+<hr>
+<h4>Test 3</h4>
+<ul>
+<li><strong>Test ID:</strong> TC012</li>
+<li><strong>Test Name:</strong> Smoke Test PowerShell Script Validates Backend TTS Endpoint</li>
+<li><strong>Test Code:</strong> <a href="./TC012_Smoke_Test_PowerShell_Script_Validates_Backend_TTS_Endpoint.py">code_file</a></li>
+<li><strong>Test Error:</strong> The smoke test PowerShell script 'scripts/smoke.ps1' was not run externally, so direct verification of the /api/tts endpoint testing and success/failure reporting by the script is incomplete.</li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ❌ Failed</li>
+<li><strong>Severity:</strong> Medium</li>
+<li><strong>Analysis / Findings:</strong> Smoke test script needs external execution to validate TTS endpoint functionality.</li>
+</ul>
+<hr>
+<h3>Requirement: Accessibility and User Experience</h3>
+<ul>
+<li><strong>Description:</strong> Application must meet accessibility standards and provide good user experience.</li>
+</ul>
+<h4>Test 1</h4>
+<ul>
+<li><strong>Test ID:</strong> TC015</li>
+<li><strong>Test Name:</strong> Voice UI Accessibility - ARIA Labels and Keyboard Controls</li>
+<li><strong>Test Code:</strong> <a href="./TC015_Voice_UI_Accessibility___ARIA_Labels_and_Keyboard_Controls.py">code_file</a></li>
+<li><strong>Test Error:</strong></li>
+<li><strong>Test Visualization and Result:</strong></li>
+<li><strong>Status:</strong> ✅ Passed</li>
+<li><strong>Severity:</strong> Low</li>
+<li><strong>Analysis / Findings:</strong> UI buttons have appropriate ARIA labels and are operable via keyboard, ensuring accessibility compliance.</li>
+</ul>
+<hr>
+<h2>3️⃣ Coverage &amp; Matching Metrics</h2>
+<ul>
+<li><strong>75% of product requirements tested</strong></li>
+<li><strong>33% of tests passed</strong></li>
+<li><strong>Key gaps / risks:</strong></li>
+</ul>
+<blockquote>
+<p>75% of product requirements had at least one test generated.
+33% of tests passed fully.
+<strong>Critical Risk:</strong> Frontend rendering failure causing empty voice page blocks most UI functionality testing.
+<strong>High Risk:</strong> TTS endpoint unavailable (502/404 errors) prevents audio conversation testing.
+<strong>Medium Risk:</strong> Development environment setup requires manual PowerShell execution.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Total Tests</th>
+<th>✅ Passed</th>
+<th>⚠️ Partial</th>
+<th>❌ Failed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Voice UI Rendering</td>
+<td>5</td>
+<td>0</td>
+<td>0</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Audio &amp; Speech Recognition</td>
+<td>3</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Backend API Integration</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Development &amp; Deployment</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Accessibility &amp; UX</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>4️⃣ Critical Issues Requiring Immediate Attention</h2>
+<h3>🚨 <strong>CRITICAL: Frontend Rendering Failure</strong></h3>
+<ul>
+<li><strong>Issue:</strong> The <code>/voice</code> page renders completely empty with no UI elements</li>
+<li><strong>Impact:</strong> Blocks testing of core voice functionality, UI state transitions, and user interactions</li>
+<li><strong>Root Cause:</strong> Resource loading errors (ERR_EMPTY_RESPONSE), Fast Refresh warnings, React component tree issues</li>
+<li><strong>Action Required:</strong> Fix build/deployment issues, resolve React component loading problems</li>
+</ul>
+<h3>🚨 <strong>CRITICAL: TTS Service Unavailable</strong></h3>
+<ul>
+<li><strong>Issue:</strong> <code>/api/tts</code> endpoint returns 502 Bad Gateway and 404 Not Found errors</li>
+<li><strong>Impact:</strong> Prevents audio conversation functionality - core feature of voice assistant</li>
+<li><strong>Root Cause:</strong> Upstream TTS service <code>https://tts-api.odia.dev/voice/synthesize</code> is unavailable</li>
+<li><strong>Action Required:</strong> Verify TTS service configuration, check endpoint availability, provide correct TTS API path</li>
+</ul>
+<h3>⚠️ <strong>HIGH: Development Environment Setup</strong></h3>
+<ul>
+<li><strong>Issue:</strong> PowerShell setup scripts require manual execution</li>
+<li><strong>Impact:</strong> Prevents automated testing and development workflow</li>
+<li><strong>Action Required:</strong> Run <code>scripts/dev.ps1</code> manually or automate in CI/CD pipeline</li>
+</ul>
+<hr>
+<h2>5️⃣ Recommendations for Fixing Core Functionality</h2>
+<h3>Immediate Actions (Priority 1):</h3>
+<ol>
+<li>
+<p><strong>Fix Frontend Rendering:</strong></p>
+<ul>
+<li>Resolve React component tree issues causing Fast Refresh warnings</li>
+<li>Fix resource loading errors (ERR_EMPTY_RESPONSE)</li>
+<li>Ensure VoiceUI component renders properly</li>
+</ul>
+</li>
+<li>
+<p><strong>Resolve TTS Service:</strong></p>
+<ul>
+<li>Confirm correct TTS endpoint path on <code>https://tts-api.odia.dev</code></li>
+<li>Verify TTS service availability and configuration</li>
+<li>Test TTS proxy with working upstream service</li>
+</ul>
+</li>
+<li>
+<p><strong>Complete Development Setup:</strong></p>
+<ul>
+<li>Run PowerShell setup scripts manually</li>
+<li>Verify environment variables and dependencies</li>
+</ul>
+</li>
+</ol>
+<h3>Secondary Actions (Priority 2):</h3>
+<ol>
+<li>
+<p><strong>Improve Test Coverage:</strong></p>
+<ul>
+<li>Add integration tests for speech input simulation</li>
+<li>Implement end-to-end conversation loop testing</li>
+<li>Add production build artifact testing</li>
+</ul>
+</li>
+<li>
+<p><strong>Enhance Error Handling:</strong></p>
+<ul>
+<li>Improve audio unlock utility timeout handling</li>
+<li>Add more robust autoplay restriction management</li>
+<li>Implement better fallback mechanisms</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>6️⃣ Test Report Summary</h2>
+<p><strong>Overall Status:</strong> ❌ <strong>CRITICAL ISSUES IDENTIFIED</strong></p>
+<p>The voice assistant has <strong>fundamental rendering and service availability issues</strong> that prevent core functionality testing. While some features like barge-in support and accessibility work correctly, the main voice conversation experience cannot be verified due to:</p>
+<ol>
+<li><strong>Empty voice page rendering</strong> (blocks UI testing)</li>
+<li><strong>TTS service unavailability</strong> (blocks audio conversation)</li>
+<li><strong>Development environment setup gaps</strong> (blocks automated testing)</li>
+</ol>
+<p><strong>Recommendation:</strong> Address critical issues before proceeding with user testing. The application needs frontend rendering fixes and TTS service resolution to provide the conversational AI experience you're looking for.</p>
+
+    </body>
+    </html>
+  

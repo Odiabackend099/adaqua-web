@@ -1,0 +1,426 @@
+[
+  {
+    "id": "TC001",
+    "title": "Start Conversation Flow with Single Click",
+    "description": "Verify that the user can start a voice conversation with a single click on the mic button and that audio is unlocked on the first user gesture.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the /voice page."
+      },
+      {
+        "type": "action",
+        "description": "Click the microphone button once."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that audio is unlocked following the first user gesture."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that continuous speech recognition starts with interim results displayed."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm UI transitions from Idle state to Listening state with glowing orb and captions."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Continuous Conversation Loop Functionality",
+    "description": "Ensure that after the initial start, the conversation continues automatically with the system listening, thinking, speaking, and then listening again without further user input.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start a conversation by clicking the mic button."
+      },
+      {
+        "type": "action",
+        "description": "Speak a phrase to the assistant."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify interim transcription appears during speech."
+      },
+      {
+        "type": "action",
+        "description": "Wait for assistant response audio playback."
+      },
+      {
+        "type": "assertion",
+        "description": "Validate UI transitions from Listening to Thinking to Speaking states sequentially."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm that the system automatically returns to Listening state after audio playback without user interaction."
+      },
+      {
+        "type": "action",
+        "description": "Repeat speaking to confirm loop continues."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Barge-in Support Interrupts Audio Playback and Restarts Recognition",
+    "description": "Verify that user speech interrupts the assistant's audio playback and that recognition restarts within 300 milliseconds.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start conversation and let assistant begin speaking."
+      },
+      {
+        "type": "action",
+        "description": "Speak while the assistant is still playing audio."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that audio playback stops within 300 ms after speech detection."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm the system transitions immediately from Speaking to Listening state."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify speech recognition restarts capturing new user input."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Stop Conversation Sets UI to Idle and Stops Audio & Recognition",
+    "description": "Ensure that clicking the stop (X) button at any time halts audio playback, stops speech recognition, and resets UI to Idle state.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start the voice conversation."
+      },
+      {
+        "type": "action",
+        "description": "Click the stop (X) button during any UI state."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that audio playback stops immediately."
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure speech recognition stops."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm UI transitions to Idle state with glowing orb indication off."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Microphone Access Denied Error Handling",
+    "description": "Verify that the application detects microphone access denial and displays appropriate user notifications or toast messages.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Deny microphone permission when prompted by the browser."
+      },
+      {
+        "type": "action",
+        "description": "Click the mic button to start conversation."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that a clear error message or toast notification indicates microphone access denial."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that UI remains in Idle state and does not proceed to Listening state."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "TTS Proxy Returns Playable Audio within Performance Requirements",
+    "description": "Validate that the TTS server-side proxy returns playable audio within 3 seconds time-to-first-byte consistently and that audio plays back correctly.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Trigger assistant response causing TTS synthesis."
+      },
+      {
+        "type": "assertion",
+        "description": "Measure time-to-first-byte (TTFB) of TTS audio response and ensure it is under 3 seconds."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm audio playback starts successfully without errors."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Fallback SSE Chat Stream Works without OpenAI API Key",
+    "description": "Verify that the server-sent events chat API falls back to a stub stream maintaining a continuous conversation loop when no OpenAI API key is provided.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start voice conversation with OpenAI API key removed or unavailable on server config."
+      },
+      {
+        "type": "action",
+        "description": "Speak to the assistant and observe responses."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that fallback stub responses are streamed and the conversation loop continues."
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure UI states transition correctly despite fallback mode."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "UI Accessibility - ARIA Labels and Keyboard Navigation",
+    "description": "Ensure all interactive elements have appropriate ARIA labels and that all controls are operable via keyboard navigation for accessibility compliance.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate the voice UI using keyboard only (tab, shift-tab, enter, space)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that microphone and stop controls receive keyboard focus."
+      },
+      {
+        "type": "assertion",
+        "description": "Check all buttons have descriptive ARIA labels for screen readers."
+      },
+      {
+        "type": "action",
+        "description": "Activate mic and stop using keyboard and confirm normal operation."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "UI State Transitions Follow Correct Sequence",
+    "description": "Verify that the UI transitions accurately among the four states Idle, Listening, Thinking, and Speaking with proper visual feedback and timing.",
+    "category": "ui",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Launch the voice page (Idle state)."
+      },
+      {
+        "type": "action",
+        "description": "Click the mic button and start speaking (transition to Listening)."
+      },
+      {
+        "type": "action",
+        "description": "Wait for speech end and server processing (transition to Thinking)."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm UI displays thinking state indicator."
+      },
+      {
+        "type": "action",
+        "description": "Assistant audio playback starts (Speaking state)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify speaking state animations and captions appear."
+      },
+      {
+        "type": "action",
+        "description": "Upon audio end, verify UI returns to Listening for next input."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Ensure No Secret Environment Variables Exposed in Client",
+    "description": "Validate that no secret keys, tokens, or sensitive environment variables are present in client-side code, bundles or logs.",
+    "category": "security",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Build and deploy client bundle."
+      },
+      {
+        "type": "action",
+        "description": "Inspect client source and network traffic for presence of secret values."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that all secret API keys or tokens remain server-side only."
+      },
+      {
+        "type": "assertion",
+        "description": "Check .env files are ignored in version control."
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Development PowerShell Setup Script Executes Successfully",
+    "description": "Verify that the provided PowerShell setup script for local development executes without errors and configures the environment properly.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Run the development setup PowerShell script (scripts/dev.ps1) in a Windows environment."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that dependencies and environment variables are set correctly."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no errors or warnings are reported during script execution."
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Smoke Test PowerShell Script Validates Backend TTS Endpoint",
+    "description": "Ensure that the provided smoke test PowerShell script runs successfully and confirms the backend TTS API returns expected responses.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Execute the smoke test PowerShell script (scripts/smoke-voice.ps1)."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify script completes without errors."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm that TTS endpoint returns valid audio content."
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Unknown Endpoint Error Handling on TTS Proxy API",
+    "description": "Verify that requests to unknown or invalid endpoints of the TTS server proxy return appropriate error responses without crashing the server.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Send requests with invalid routes or parameters to the TTS proxy API."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm that the server returns proper error codes (e.g., 404/400) and messages."
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure the client displays user-friendly error notifications."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify server stability without crashes or memory leaks."
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Captions Update Correctly With Interim and Final Recognition Results",
+    "description": "Verify that the UI captions show real-time interim speech recognition results during speech and update to final transcriptions after speech ends.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start speaking and monitor captions area."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that captions display interim transcription updates in real-time."
+      },
+      {
+        "type": "action",
+        "description": "End speech input."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify captions update to final recognized text."
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Voice UI Accessibility - ARIA Labels and Keyboard Controls",
+    "description": "Ensure the main voice orchestrator UI components support keyboard controls and have meaningful ARIA labels to conform to accessibility best practices.",
+    "category": "ui",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate through voice UI components using keyboard tab sequence."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify each interactive element has correct ARIA label attributes."
+      },
+      {
+        "type": "action",
+        "description": "Use keyboard to activate mic and stop controls."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm actions triggered correctly without mouse."
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Server-Sent Events Chat API Handles SSE Disconnects Gracefully",
+    "description": "Verify that the SSE chat API manages disconnects or network interruptions gracefully, allowing reconnection or fallback streaming without user disruption.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start a conversation and simulate network disconnect or SSE connection drop."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that the client displays reconnect attempts or fallback messages."
+      },
+      {
+        "type": "action",
+        "description": "Restore network and verify SSE reconnection."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm conversation resumes without loss of context or errors."
+      }
+    ]
+  }
+]

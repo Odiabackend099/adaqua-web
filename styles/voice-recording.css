@@ -1,0 +1,386 @@
+/* Voice Recording UI Styles */
+:root {
+  /* Color Palette */
+  --primary-blue: #0066ff;
+  --secondary-blue: #4da6ff;
+  --danger-red: #ff4444;
+  --bg-dark: #000000;
+  --bg-medium: #1a1a1a;
+  --white: #ffffff;
+  --transparent-white: rgba(255, 255, 255, 0.2);
+  --transparent-white-light: rgba(255, 255, 255, 0.3);
+  
+  /* Sizes */
+  --button-size: 60px;
+  --wave-height: 60px;
+  --control-panel-padding: 20px;
+  
+  /* Animations */
+  --animation-duration: 0.2s;
+  --breathing-duration: 2s;
+}
+
+/* Main Container */
+.voice-recording-ui {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.voice-recording-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* Main Content Area */
+.main-content-area {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 2rem;
+  position: relative;
+}
+
+/* Audio Wave Visualization */
+.audio-wave-visualization {
+  width: 80%;
+  height: var(--wave-height);
+  border-radius: 30px;
+  background: linear-gradient(90deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, rgba(77, 166, 255, 0.3) 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
+  transition: all var(--animation-duration) ease;
+}
+
+/* Wave States */
+.wave-inactive {
+  opacity: 0.6;
+  transform: scale(1);
+}
+
+.wave-active {
+  opacity: 1;
+}
+
+.wave-listening {
+  animation: breathing-pulse var(--breathing-duration) ease-in-out infinite;
+}
+
+.wave-thinking {
+  animation: thinking-pulse 1.5s ease-in-out infinite;
+}
+
+.wave-speaking {
+  animation: speaking-pulse 1s ease-in-out infinite;
+}
+
+.wave-paused {
+  opacity: 0.7;
+  animation: paused-glow 2s ease-in-out infinite;
+}
+
+.wave-error {
+  background: linear-gradient(90deg, var(--danger-red) 0%, #ff6666 50%, rgba(255, 68, 68, 0.3) 100%);
+  animation: error-pulse 0.5s ease-in-out infinite;
+}
+
+/* Wave Elements */
+.wave-main-bar {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.wave-gradient {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, rgba(77, 166, 255, 0.3) 100%);
+  border-radius: 30px;
+}
+
+.wave-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 20px;
+}
+
+.wave-element {
+  width: 4px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+.wave-listening .wave-element {
+  animation: wave-bars 1.2s ease-in-out infinite;
+}
+
+.wave-listening .wave-element:nth-child(1) { animation-delay: 0s; }
+.wave-listening .wave-element:nth-child(2) { animation-delay: 0.1s; }
+.wave-listening .wave-element:nth-child(3) { animation-delay: 0.2s; }
+.wave-listening .wave-element:nth-child(4) { animation-delay: 0.3s; }
+.wave-listening .wave-element:nth-child(5) { animation-delay: 0.4s; }
+
+.wave-glow {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 40px;
+  background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity var(--animation-duration) ease;
+}
+
+.wave-active .wave-glow {
+  opacity: 1;
+}
+
+/* Control Panel */
+.control-panel {
+  background: rgba(0, 0, 0, 0.8);
+  padding: var(--control-panel-padding);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.status-message {
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.9;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+}
+
+.control-button {
+  width: var(--button-size);
+  height: var(--button-size);
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--animation-duration) ease;
+  color: var(--white);
+  font-size: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.control-button:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.control-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Pause Button */
+.pause-button {
+  background: var(--transparent-white);
+  border: 2px solid var(--transparent-white-light);
+}
+
+.pause-button.start-button {
+  background: var(--primary-blue);
+  border: 2px solid var(--secondary-blue);
+}
+
+.pause-button.paused {
+  background: var(--secondary-blue);
+  border: 2px solid var(--primary-blue);
+}
+
+/* Stop Button */
+.stop-button {
+  background: var(--danger-red);
+  border: none;
+}
+
+.stop-button:hover:not(:disabled) {
+  background: #ff5555;
+  box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
+}
+
+/* Animations */
+@keyframes breathing-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+}
+
+@keyframes thinking-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes speaking-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes paused-glow {
+  0%, 100% {
+    opacity: 0.7;
+    box-shadow: 0 0 20px rgba(0, 102, 255, 0.2);
+  }
+  50% {
+    opacity: 0.9;
+    box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
+  }
+}
+
+@keyframes error-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes wave-bars {
+  0%, 100% {
+    height: 20px;
+    opacity: 0.6;
+  }
+  50% {
+    height: 40px;
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  :root {
+    --button-size: 70px;
+    --wave-height: 70px;
+    --control-panel-padding: 25px;
+  }
+  
+  .control-buttons {
+    gap: 30px;
+  }
+  
+  .status-message {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --button-size: 50px;
+    --wave-height: 50px;
+    --control-panel-padding: 15px;
+  }
+  
+  .audio-wave-visualization {
+    width: 85%;
+  }
+  
+  .control-buttons {
+    gap: 20px;
+  }
+  
+  .status-message {
+    font-size: 13px;
+  }
+  
+  .wave-element {
+    width: 3px;
+    height: 15px;
+  }
+}
+
+/* Hardware acceleration for better performance */
+.audio-wave-visualization,
+.control-button,
+.wave-element {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .wave-listening,
+  .wave-thinking,
+  .wave-speaking,
+  .wave-paused,
+  .wave-error {
+    animation: none;
+  }
+  
+  .wave-element {
+    animation: none;
+  }
+  
+  .control-button:hover:not(:disabled) {
+    transform: none;
+  }
+}

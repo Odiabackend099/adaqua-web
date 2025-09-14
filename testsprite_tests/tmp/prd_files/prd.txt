@@ -1,0 +1,277 @@
+Here’s a complete **Architectural Product Requirements Document (APRD)** for your **Conversational Assistant (voice AI)**. It’s written to be copy-drop into `docs/PRD.md` and to drive Cursor’s implementation and verification.
+
+---
+
+# Adaqua Conversational Voice Assistant – APRD
+
+**Owner:** Austyn
+**Code name:** Adaqua Voice
+**Status:** v1 (implementation-ready)
+**Primary platforms:** Web (Chrome/Edge desktop first)
+**Routers:** Next.js **Pages Router** (avoid App Router for now)
+
+---
+
+## 1) Problem & Goal
+
+**Problem:** Users want a natural, hands-free conversation with an AI assistant—no clicking between turns, no fiddling with controls.
+
+**Goal:** Deliver a **seamless, continuous voice conversation**:
+
+* **One click to start.**
+* Speak naturally. Assistant replies with **low-latency TTS**.
+* Conversation **loops automatically**.
+* **One click to stop** (and it fully quiets).
+
+---
+
+## 2) Non-Goals (v1)
+
+* No multi-speaker diarization.
+* No wake-word (“Hey…”) hotword.
+* No server-side STT yet (browser STT only in v1).
+* No custom LLM routing to “Brain chat” until its **documented API** is provided.
+
+---
+
+## 3) Success Metrics (hard gates)
+
+* **S1 – TTS ready:** `/api/tts?text=hello` returns audio (`audio/*`) ≤ **3s TTFB**.
+* **S2 – Zero-friction loop:** from a fresh page load, **one click** → user speaks → assistant **speaks back** → auto-resume listening. No second click needed.
+* **S3 – Barge-in:** while assistant speaks, user starts talking → playback **stops within 300 ms** and STT begins.
+* **S4 – Secrets safe:** no `.env*` in git; no secret values logged or shipped to client.
+* **S5 – Compat:** works on latest Chrome/Edge (Windows).
+* **S6 – No LLM key fallback:** if `OPENAI_API_KEY` absent, **streamed stub** still exercises the loop so S2 & S3 remain verifiable.
+
+---
+
+## 4) Personas
+
+* **Austyn (Builder):** needs reliable local dev, Windows-friendly scripts, and a deterministic test checklist.
+* **Everyday Speaker:** wants to tap once and just talk; expects quick, natural back-and-forth.
+* **No-nonsense QA:** validates behavior via URLs/scripts and accepts/blocks release via objective gates.
+
+---
+
+## 5) User Experience
+
+### 5.1 Primary Flow (Happy Path)
+
+1. User opens `/voice`.
+2. Sees a **glowing orb**, “**Tap mic to speak**” caption, and two buttons: **Mic** and **X**.
+3. **Clicks Mic** (first and only required click).
+
+   * App **unlocks audio** (silent blip) to satisfy autoplay policies.
+   * Web Speech API starts (`continuous=true`, `interimResults=true`).
+   * UI state → **Listening** (orb glow intensifies).
+4. User speaks; interim caption shows partial words.
+5. Pause/end → recognition yields **final text**.
+6. UI state → **Thinking**; app POSTs to `/api/chat` and **streams** text via SSE.
+7. UI state → **Speaking**; app calls `/api/tts` and plays audio.
+8. On **ended**, UI returns to **Listening** (auto-resume).
+9. Loop repeats **hands-free** until user clicks **X**.
+10. Clicking **X** stops STT and any audio; UI → **Idle**.
+
+### 5.2 Barge-in
+
+* If user starts speaking while the assistant is speaking:
+
+  * **Immediately stop/pause** audio (≤300 ms).
+  * **Start STT** and treat the new utterance as the next turn.
+
+### 5.3 Error UX
+
+* **Mic denied:** Toast: “Microphone access needed. Click the mic and allow access in the browser.”
+* **TTS 4xx/5xx:** Toast: “Couldn’t synthesize speech. Check `/api/tts?text=hello` and server token.”
+* **SSE drop:** Caption: “Reconnecting…” (retry once), then show: “Network issue—try again.”
+* **Autoplay blocked:** On first mic click, run `unlockAudio()`. If a `play()` rejection occurs, re-invoke `unlockAudio()` and retry once; else toast.
+
+### 5.4 Copy & States
+
+* Idle: “**Tap mic to speak**”
+* Listening: soft pulsating orb; caption shows **interim** or last **final** text.
+* Thinking: “**Thinking…**”
+* Speaking: subtle glow; no extra noise.
+
+---
+
+## 6) Functional Requirements
+
+1. **Continuous voice loop** with the four states (Idle/Listening/Thinking/Speaking).
+2. **Barge-in** preempting current TTS playback.
+3. **SSE chat** from `/api/chat` (OpenAI when key provided; stub otherwise).
+4. **Server TTS proxy** at `/api/tts` → **Austyn’s TTS** (`https://tts-api.odia.dev`).
+
+   * **Do not guess** endpoints beyond the **expected** `/voice/synthesize`. If upstream returns Not Found, return a structured error `{ok:false, error:"tts_endpoint_unknown"}` and surface S1 fail.
+   * Supports:
+
+     * `GET /api/tts?text=hello`
+     * `POST /api/tts { text, voice_id?, format?='mp3' }`
+   * Forwards `Authorization: Bearer ${BRAIN_SERVER_TOKEN}` **if present**.
+5. **Audio unlock** on first user gesture.
+6. **Env-driven config** (voice id, URLs, lang).
+7. **No secrets on client**; all tokens on server only.
+8. **Windows scripts** to run dev and smoke tests.
+
+---
+
+## 7) Non-Functional Requirements
+
+* **Latency:**
+
+  * Local TTS proxy TTFB ≤ 300 ms (excluding upstream).
+  * First audible response (click → speech) ≤ 3.5 s on typical broadband.
+* **Resilience:** one retry for audio playback; tolerant to one transient SSE reconnect.
+* **Accessibility:** buttons keyboard-focusable; ARIA labels present; caption readable contrast.
+* **Privacy:** no audio recordings leave device in v1 (browser STT). No PII logging.
+
+---
+
+## 8) Architecture & Contracts
+
+### 8.1 High-Level
+
+* **Client** (React, Pages Router): `components/VoiceUI.tsx`
+
+  * Web Speech API for STT
+  * SSE `/api/chat`
+  * TTS `/api/tts` → play
+  * Barge-in controller
+* **Server** (Next.js API routes):
+
+  * `pages/api/chat.ts` → OpenAI (if key) or stub stream
+  * `pages/api/tts.ts` → **proxy** to `https://tts-api.odia.dev`
+
+### 8.2 Environment Variables
+
+* Client-safe:
+
+  * `NEXT_PUBLIC_BRAIN_API_URL=https://brain-api.odia.dev`
+  * `NEXT_PUBLIC_BRAIN_PUBLIC_TOKEN` (optional)
+  * `NEXT_PUBLIC_VOICE_VOICE_ID=naija_male_warm`
+  * `NEXT_PUBLIC_STT_LANG=en-US` (fallback; can try `en-NG` later)
+* Server-only:
+
+  * `BRAIN_API_URL=https://brain-api.odia.dev`
+  * `BRAIN_SERVER_TOKEN` (optional)
+  * `OPENAI_API_KEY` (optional; enables real chat)
+
+**.gitignore must include:**
+`.env.local` and `.env.*.local`
+
+### 8.3 API Contracts
+
+#### `POST /api/chat`  (response is **SSE**)
+
+Request:
+
+```json
+{
+  "user": "string",
+  "history": [ { "role": "user|assistant|system", "content": "string" } ]
+}
+```
+
+Response stream events:
+
+```json
+{ "delta": "string" }    // repeated chunks
+// or
+{ "error": "message" }
+```
+
+#### `GET /api/tts?text=hello`
+
+* **200** with `Content-Type: audio/*` → bytes streamed
+* **502** `{ ok:false, error:"upstream_failed", status }`
+* **502** `{ ok:false, error:"tts_endpoint_unknown" }` if upstream path is not confirmed
+
+#### `POST /api/tts`
+
+Request:
+
+```json
+{ "text":"string", "voice_id":"string(optional)", "format":"mp3|wav(optional)" }
+```
+
+Response: audio bytes as above.
+
+---
+
+## 9) Implementation Plan (files)
+
+* `pages/voice.tsx` – dynamic import of `components/VoiceUI` (client only)
+* `components/VoiceUI.tsx` – loop, barge-in, states
+* `lib/audio.ts` – unlock, play, stop singleton
+* `lib/tts.ts` – `speak(text, voiceId?)` via `/api/tts`
+* `pages/api/chat.ts` – SSE proxy (OpenAI/stub)
+* `pages/api/tts.ts` – server proxy to `https://tts-api.odia.dev/voice/synthesize` (**only**; if 404, report unknown)
+* `styles/voice.css` – orb, controls, captions
+* `scripts/dev.ps1` – run & open `/voice`
+* `scripts/smoke.ps1` – validate `/api/tts?text=hello`
+
+---
+
+## 10) Testing & Acceptance
+
+### Manual Smoke
+
+1. Start dev, open `/api/tts?text=hello` → should download/play audio.
+2. Open `/voice`, click Mic, say “What’s up?” → hear reply.
+3. While reply is talking, start talking → audio stops fast → STT resumes.
+
+### Automated-ish (scripts)
+
+* `scripts/smoke.ps1` fails if `/api/tts` doesn’t return `audio/*`.
+* Console timing logs:
+
+  * `t_sttStart`, `t_finalText`, `t_firstDelta`, `t_ttsStart`, `t_audioFirstByte`.
+
+### Acceptance = **S1–S6 all green** (or sole blocker is **unknown TTS upstream path**, clearly reported).
+
+---
+
+## 11) Risks & Mitigations
+
+* **Unknown TTS path** at `tts-api.odia.dev`.
+  *Mitigation:* Fail clearly with `tts_endpoint_unknown`; keep loop functional with text stream; request exact synth path (expected `/voice/synthesize`).
+* **Autoplay blocked.**
+  *Mitigation:* `unlockAudio()` on first click, one retry then toast.
+* **Browser STT variance.**
+  *Mitigation:* default `en-US` (most reliable), env-tunable; STT adapter interface ready for server STT later.
+
+---
+
+## 12) Analytics & Logs (dev only)
+
+* Console: durations between states; SSE open/close reason; TTS status code.
+* No user content persisted server-side in v1.
+
+---
+
+## 13) Rollout
+
+* **Phase 1 (Local):** verify S1–S6 on Windows Chrome/Edge.
+* **Phase 2 (Staging):** test on a hosted preview (Vercel).
+* **Phase 3 (Prod):** enable OpenAI key or Brain chat when provided.
+
+---
+
+## 14) Open Questions (blockers to mark in checklist)
+
+1. **Exact synth path** on `https://tts-api.odia.dev` (default attempt: `/voice/synthesize`).
+2. If/when to switch from OpenAI to **Brain chat** (need `BRAIN_CHAT_URL` + schema).
+3. Target voice inventory (confirm `naija_male_warm` exists server-side).
+
+---
+
+## 15) Future (post-v1)
+
+* Server STT (Whisper/NeMo) with VAD.
+* Wake-word.
+* Conversation memory & interruptible TTS with SSML prosody.
+* Mobile PWA polish.
+
+---
+
+**End of APRD.**

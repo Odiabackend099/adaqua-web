@@ -8,9 +8,9 @@ export const config = {
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const ttsApiUrl = process.env.TTS_API_URL || "https://tts-api.odia.dev";
-  const serverToken = process.env.BRAIN_SERVER_TOKEN || "";
-  const defaultVoiceId = process.env.NEXT_PUBLIC_VOICE_VOICE_ID || "naija_male_warm";
+  // STRICT: Only proxy to tts-api.odia.dev - NO FALLBACKS
+  const ttsApiUrl = "http://tts-api.odia.dev";
+  const defaultVoiceId = "naija_male_warm";
 
   try {
     // Handle GET request with text query parameter
@@ -23,8 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const response = await fetch(`${ttsApiUrl}/voice/synthesize`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ...(serverToken ? { Authorization: `Bearer ${serverToken}` } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           text,
@@ -35,14 +34,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (!response.ok) {
         const errorText = await response.text().catch(() => "");
-        if (response.status === 404) {
-          return res.status(502).json({ 
-            ok: false, 
-            error: "tts_endpoint_unknown", 
-            message: "TTS endpoint not found. Expected /voice/synthesize on tts-api.odia.dev",
-            status: response.status 
-          });
-        }
         return res.status(502).json({ 
           ok: false, 
           error: "upstream_error", 
@@ -82,8 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const response = await fetch(`${ttsApiUrl}/voice/synthesize`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ...(serverToken ? { Authorization: `Bearer ${serverToken}` } : {})
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           text,
@@ -94,14 +84,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       if (!response.ok) {
         const errorText = await response.text().catch(() => "");
-        if (response.status === 404) {
-          return res.status(502).json({ 
-            ok: false, 
-            error: "tts_endpoint_unknown", 
-            message: "TTS endpoint not found. Expected /voice/synthesize on tts-api.odia.dev",
-            status: response.status 
-          });
-        }
         return res.status(502).json({ 
           ok: false, 
           error: "upstream_error", 

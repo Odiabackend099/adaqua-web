@@ -1,10 +1,10 @@
 ﻿import dynamic from "next/dynamic";
-const VoiceUI = dynamic(() => import("../components/VoiceUI"), { ssr: false });
+const UnifiedVoiceUI = dynamic(() => import("../components/UnifiedVoiceUI"), { ssr: false });
 
 export default function VoicePage() {
   return (
     <div className="voice-page">
-      <VoiceUI />
+      <UnifiedVoiceUI />
     </div>
   );
 }

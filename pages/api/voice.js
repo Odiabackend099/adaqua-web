@@ -14,27 +14,22 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok:false, error:"text_or_message_required", requestId });
     }
 
-    const base = process.env.ADAQUA_BRAIN_API_URL || process.env.ADAQUA_TTS_BASE;
-    const key = process.env.ADAQUA_BRAIN_API_KEY || process.env.ADAQUA_TTS_API_KEY;
-    if (!base || !key) {
-      return res.status(500).json({ ok:false, error:"missing_adaqua_env", requestId });
-    }
-
-    const url = `${base.replace(/\/$/,"")}/voice/synthesize`;
+    // Use ODIADEV TTS endpoint directly
+    const url = "http://tts-api.odia.dev/voice/synthesize";
 
     const ac = new AbortController();
     const timer = setTimeout(() => ac.abort(), 15000);
 
     const resp = await fetch(url, {
       method: "POST",
-      headers: { "Authorization": `Bearer ${key}`, "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: content, voice_id, format }),
       signal: ac.signal
     }).finally(() => clearTimeout(timer));
 
     if (!resp.ok) {
       const detail = await resp.text().catch(()=> "");
-      throw new Error(`Adaqua TTS failed ${resp.status} ${resp.statusText} ${detail}`);
+      throw new Error(`ODIADEV TTS failed ${resp.status} ${resp.statusText} ${detail}`);
     }
 
     const arr = await resp.arrayBuffer();
@@ -43,7 +38,7 @@ export default async function handler(req, res) {
     res.setHeader("Content-Type", format === "wav" ? "audio/wav" : "audio/mpeg");
     res.setHeader("Content-Length", String(buf.length));
     res.setHeader("Cache-Control", "public, max-age=3600");
-    res.setHeader("X-Voice-Engine", "Adaqua");
+    res.setHeader("X-Voice-Engine", "ODIADEV");
     res.setHeader("X-Request-Id", requestId);
     return res.status(200).send(buf);
 

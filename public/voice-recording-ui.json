@@ -1,0 +1,165 @@
+{
+  "interface_type": "voice_recording_ui",
+  "layout": {
+    "background": {
+      "type": "gradient",
+      "colors": ["#000000", "#1a1a1a"],
+      "direction": "vertical",
+      "description": "dark_to_darker_gradient"
+    },
+    "container": {
+      "width": "100%",
+      "height": "100vh",
+      "padding": "0",
+      "display": "flex",
+      "flex_direction": "column",
+      "justify_content": "space-between"
+    }
+  },
+  "main_content_area": {
+    "visual_indicator": {
+      "type": "audio_wave_visualization",
+      "position": "bottom_center",
+      "element": {
+        "shape": "rounded_rectangle",
+        "width": "80%",
+        "height": "60px",
+        "background": "linear_gradient",
+        "colors": {
+          "start": "#0066ff",
+          "middle": "#4da6ff", 
+          "end": "rgba(77, 166, 255, 0.3)"
+        },
+        "border_radius": "30px",
+        "glow_effect": true,
+        "animation": "pulse_breathing"
+      }
+    }
+  },
+  "control_panel": {
+    "position": "bottom",
+    "background": "rgba(0, 0, 0, 0.8)",
+    "padding": "20px",
+    "controls": [
+      {
+        "type": "pause_button",
+        "element": "button",
+        "shape": "circle",
+        "size": {
+          "width": "60px",
+          "height": "60px"
+        },
+        "background": "rgba(255, 255, 255, 0.2)",
+        "border": "2px solid rgba(255, 255, 255, 0.3)",
+        "icon": {
+          "type": "pause_bars",
+          "color": "#ffffff",
+          "size": "24px"
+        },
+        "position": "left_side"
+      },
+      {
+        "type": "stop_button", 
+        "element": "button",
+        "shape": "circle",
+        "size": {
+          "width": "60px",
+          "height": "60px"
+        },
+        "background": "#ff4444",
+        "border": "none",
+        "icon": {
+          "type": "square_stop",
+          "color": "#ffffff",
+          "size": "20px"
+        },
+        "position": "right_side"
+      }
+    ],
+    "layout": {
+      "display": "flex",
+      "justify_content": "space_around",
+      "align_items": "center",
+      "gap": "40px"
+    }
+  },
+  "animations": {
+    "audio_wave": {
+      "type": "breathing_pulse",
+      "duration": "2s",
+      "timing": "ease_in_out",
+      "iteration": "infinite",
+      "keyframes": {
+        "0%": "opacity: 0.6, transform: scale(1)",
+        "50%": "opacity: 1, transform: scale(1.05)",
+        "100%": "opacity: 0.6, transform: scale(1)"
+      }
+    },
+    "button_hover": {
+      "type": "scale_feedback",
+      "duration": "0.2s",
+      "transform": "scale(1.1)"
+    }
+  },
+  "responsive_design": {
+    "mobile_breakpoint": "480px",
+    "tablet_breakpoint": "768px",
+    "adjustments": {
+      "mobile": {
+        "control_panel_padding": "15px",
+        "button_size": "50px",
+        "audio_wave_height": "50px"
+      },
+      "tablet": {
+        "control_panel_padding": "25px", 
+        "button_size": "70px",
+        "audio_wave_height": "70px"
+      }
+    }
+  },
+  "color_palette": {
+    "primary": "#0066ff",
+    "secondary": "#4da6ff", 
+    "accent": "#ff4444",
+    "background_dark": "#000000",
+    "background_medium": "#1a1a1a",
+    "white": "#ffffff",
+    "transparent_white": "rgba(255, 255, 255, 0.2)"
+  },
+  "nigerian_optimizations": {
+    "network_efficiency": {
+      "css_animations": "hardware_accelerated",
+      "image_usage": "none_svg_icons_only",
+      "data_consumption": "minimal"
+    },
+    "performance": {
+      "render_optimization": "css_transforms_over_position_changes",
+      "battery_friendly": "reduced_animation_frequency",
+      "low_end_device_support": "fallback_to_static_states"
+    }
+  },
+  "css_implementation": {
+    "framework_compatibility": ["React", "Vue", "Angular", "Vanilla_JS"],
+    "css_variables": {
+      "--primary-blue": "#0066ff",
+      "--secondary-blue": "#4da6ff", 
+      "--danger-red": "#ff4444",
+      "--bg-dark": "#000000",
+      "--white": "#ffffff",
+      "--button-size": "60px",
+      "--wave-height": "60px"
+    }
+  },
+  "component_structure": {
+    "containers": [
+      "AppContainer",
+      "MainContentArea", 
+      "ControlPanel"
+    ],
+    "interactive_elements": [
+      "PauseButton",
+      "StopButton",
+      "AudioWaveVisualization"
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+name: Guardrails
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Check for banned TTS APIs
+        run: |
+          echo "Checking for banned TTS APIs..."
+          if grep -r -i "speechSynthesis\|webkitSpeechRecognition\|elevenlabs\|polly\|gtts\|edge-tts" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . --exclude-dir=node_modules --exclude-dir=_archive; then
+            echo "❌ Found banned TTS APIs. Only use tts-api.odia.dev endpoint."
+            exit 1
+          else
+            echo "✅ No banned TTS APIs found"
+          fi
+      
+      - name: Check for alternate TTS endpoints
+        run: |
+          echo "Checking for alternate TTS endpoints..."
+          if grep -r "https\?://[^\"]*/voice/synthesize" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . --exclude-dir=node_modules --exclude-dir=_archive | grep -v "tts-api\.odia\.dev"; then
+            echo "❌ Found alternate TTS endpoints. Only use tts-api.odia.dev"
+            exit 1
+          else
+            echo "✅ Only approved TTS endpoint found"
+          fi
+      
+      - name: Check for fallback patterns
+        run: |
+          echo "Checking for fallback patterns..."
+          if grep -r -i "fallback\|backup\|alternative" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . --exclude-dir=node_modules --exclude-dir=_archive | grep -v "//.*fallback\|//.*backup\|//.*alternative"; then
+            echo "❌ Found fallback patterns. No fallbacks allowed."
+            exit 1
+          else
+            echo "✅ No fallback patterns found"
+          fi
+      
+      - name: Check for single UI
+        run: |
+          echo "Checking for single UI..."
+          UI_COUNT=$(find . -name "*.tsx" -o -name "*.jsx" | grep -E "(Voice|UI)" | grep -v "_archive" | wc -l)
+          if [ $UI_COUNT -gt 1 ]; then
+            echo "❌ Found $UI_COUNT UI components. Only one UI allowed."
+            find . -name "*.tsx" -o -name "*.jsx" | grep -E "(Voice|UI)" | grep -v "_archive"
+            exit 1
+          else
+            echo "✅ Single UI confirmed"
+          fi
+      
+      - name: Validate TTS client usage
+        run: |
+          echo "Checking TTS client usage..."
+          if ! grep -r "from.*ttsClient" --include="*.ts" --include="*.tsx" . --exclude-dir=node_modules --exclude-dir=_archive; then
+            echo "❌ No ttsClient imports found. Use lib/ttsClient.ts for all TTS operations."
+            exit 1
+          else
+            echo "✅ TTS client usage confirmed"
+          fi

@@ -1,0 +1,16 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "voice assistant",
+    "projectPath": "C:\\Users\\OD~IA\\Desktop\\Odiadev-2025\\projects\\voice assistant",
+    "testIds": [],
+    "additionalInstruction": "Test all voice assistant functionalities including TTS, STT, chat API, and audio playback. Verify that the AI responds to questions with live audio playback. Test both the new VoiceRecordingUI and legacy VoiceUI components. Ensure all endpoints are working correctly and the voice assistant can handle continuous conversation with proper audio responses.",
+    "envs": {
+      "API_KEY": "sk-user-YHg7K9OM-bT8krp2f-dC-ZbEa6-SDmfyeRCsyw2g4RQlolihHXFjcL4hyRxnjVxu7n24xiFrBvoTF34t6S7rPw-ouyFdK-44r4VTkqlFQa6RPfpYbAxh8r8ips0eSsqCMsQ"
+    }
+  },
+  "proxy": "http://4907b875-53ab-4b67-a1b8-982600dd779c:RAEoMOjxRfn5AxK9mNxmDC3WvO2Co1VX@tun.testsprite.com:8080"
+}

@@ -1,0 +1,10 @@
+# ODIADEV / Adaqua — NON-NEGOTIABLE RULES
+
+- Do not invent APIs, props, files, or flows.
+- TTS: USE ONLY this endpoint → http://tts-api.odia.dev/voice/synthesize
+  - Method: POST
+  - Body: { "text": string, "voice_id": "naija_male_warm", "format": "mp3" }
+  - No other vendors, SDKs, or browser speech APIs. No "fallbacks".
+- UI: There is ONE UI only. Do not scaffold, rename, or mirror a second UI.
+- If a required config/var is missing: STOP and raise an error. Do not guess.
+- Keep changes minimal; modify existing files over creating new ones.

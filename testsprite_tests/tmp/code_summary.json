@@ -1,0 +1,123 @@
+{
+  "tech_stack": [
+    "TypeScript",
+    "Next.js",
+    "React",
+    "Web Speech API",
+    "Web Audio API",
+    "MediaRecorder",
+    "Server-Sent Events (SSE)",
+    "OpenAI Whisper API",
+    "Adaqua Brain API",
+    "PowerShell",
+    "CSS3"
+  ],
+  "features": [
+    {
+      "name": "VoiceRecordingUI Component",
+      "description": "New modern voice recording interface with animated wave visualization, pause/stop controls, and responsive design",
+      "files": [
+        "components/VoiceRecordingUI.tsx",
+        "components/AudioWaveVisualization.tsx",
+        "components/ControlPanel.tsx",
+        "styles/voice-recording.css"
+      ]
+    },
+    {
+      "name": "VoiceUI Component",
+      "description": "Main voice orchestrator component with Web Speech API integration, continuous conversation loop, and barge-in functionality",
+      "files": [
+        "components/VoiceUI.tsx",
+        "pages/voice.tsx"
+      ]
+    },
+    {
+      "name": "Voice Assistant Legacy",
+      "description": "Original voice assistant implementation with VAD and continuous listening",
+      "files": [
+        "components/VoiceAssistant.tsx",
+        "components/VoiceCallUI.tsx",
+        "components/VoiceOnlyUI.tsx"
+      ]
+    },
+    {
+      "name": "TTS Voice API",
+      "description": "Server-side proxy to Adaqua Brain API for Nigerian voice synthesis with error handling",
+      "files": [
+        "pages/api/voice.js"
+      ]
+    },
+    {
+      "name": "STT Transcribe API",
+      "description": "Server-side proxy to OpenAI Whisper API for speech-to-text with fallback handling",
+      "files": [
+        "pages/api/transcribe.js"
+      ]
+    },
+    {
+      "name": "Chat SSE API",
+      "description": "Server-Sent Events chat proxy with OpenAI integration and stub fallback for continuous conversation",
+      "files": [
+        "pages/api/chat.ts"
+      ]
+    },
+    {
+      "name": "Audio Utilities",
+      "description": "Audio unlock, playback, and barge-in support with browser autoplay handling",
+      "files": [
+        "lib/audio.ts"
+      ]
+    },
+    {
+      "name": "Voice Styling",
+      "description": "Minimal UI with glowing orb, voice state indicators, and responsive design",
+      "files": [
+        "styles/voice.css",
+        "pages/_app.tsx"
+      ]
+    },
+    {
+      "name": "Development Scripts",
+      "description": "PowerShell scripts for development setup and smoke testing",
+      "files": [
+        "scripts/dev.ps1",
+        "scripts/smoke.ps1",
+        "scripts/smoke-test.ps1",
+        "scripts/smoke-voice.ps1"
+      ]
+    },
+    {
+      "name": "Documentation",
+      "description": "Comprehensive documentation including PRD, tasks, and voice recording UI guide",
+      "files": [
+        "docs/PRD.md",
+        "docs/TASKS.md",
+        "docs/SUCCESS-CHECKLIST.md",
+        "docs/VOICE-RECORDING-UI.md",
+        "README.md"
+      ]
+    },
+    {
+      "name": "TestSprite Tests",
+      "description": "Automated test suite with frontend and backend test plans",
+      "files": [
+        "testsprite_tests/testsprite_frontend_test_plan.json",
+        "testsprite_tests/TC001_Start_Conversation_Flow_with_Single_Click.py",
+        "testsprite_tests/TC002_Continuous_Conversation_Loop_Functionality.py",
+        "testsprite_tests/TC003_Barge_In_Support_Interrupts_Audio_Playback_and_Restarts_Recognition.py",
+        "testsprite_tests/TC004_Stop_Conversation_Sets_UI_to_Idle_and_Stops_Audio__Recognition.py",
+        "testsprite_tests/TC005_Mic_Access_Denied_Error_Handling.py",
+        "testsprite_tests/TC006_TTS_Proxy_Returns_Playable_Audio_within_Performance_Requirements.py",
+        "testsprite_tests/TC007_Fallback_SSE_Chat_Stream_Works_without_OpenAI_API_Key.py",
+        "testsprite_tests/TC009_UI_State_Transitions_Follow_Correct_Sequence.py",
+        "testsprite_tests/TC010_Ensure_No_Secret_Environment_Variables_Exposed_in_Client.py",
+        "testsprite_tests/TC011_Development_PowerShell_Setup_Script_Executes_Successfully.py",
+        "testsprite_tests/TC012_Smoke_Test_PowerShell_Script_Validates_Backend_TTS_Endpoint.py",
+        "testsprite_tests/TC013_Unknown_Endpoint_Error_Handling_on_TTS_Proxy_API.py",
+        "testsprite_tests/TC014_Captions_Update_Correctly_with_Interim_and_Final_Recognition_Results.py",
+        "testsprite_tests/TC015_Voice_UI_Accessibility___ARIA_Labels_and_Keyboard_Controls.py",
+        "testsprite_tests/TC016_Server_Sent_Events_Chat_API_Handles_SSE_Disconnects_Gracefully.py"
+      ]
+    }
+  ]
+}

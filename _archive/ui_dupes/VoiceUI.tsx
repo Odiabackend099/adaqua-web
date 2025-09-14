@@ -2,6 +2,54 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { unlockAudio, playAudioBlob, stopCurrent, isPlaying } from '../lib/audio';
 import { speak } from '../lib/tts';
 
+// Type declarations for Web Speech API
+declare global {
+  interface Window {
+    webkitSpeechRecognition: any;
+    SpeechRecognition: any;
+  }
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  onstart: (() => void) | null;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onend: (() => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+}
+
+interface SpeechRecognitionEvent {
+  resultIndex: number;
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  isFinal: boolean;
+  length: number;
+  item(index: number): SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+  message: string;
+}
+
 interface VoiceUIProps {
   className?: string;
 }
@@ -27,7 +75,8 @@ const VoiceUI: React.FC<VoiceUIProps> = ({ className = '' }) => {
   // Initialize speech recognition
   useEffect(() => {
     if (typeof window !== 'undefined' && 'webkitSpeechRecognition' in window) {
-      const recognition = new webkitSpeechRecognition();
+      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+      const recognition = new SpeechRecognition() as SpeechRecognition;
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US'; // Use en-US as most reliable, can be configured via env
