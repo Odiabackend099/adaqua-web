@@ -1,0 +1,17 @@
+﻿{
+  "screen": "voice-mode",
+  "theme": "dark",
+  "layout": { "type": "stack", "background": { "type": "radial-gradient", "colors": ["#0b0f19", "#000"], "center": "50% 40%" } },
+  "widgets": [
+    { "id": "settings", "type": "icon-button", "icon": "sliders", "position": { "anchor": "top-right", "offset": { "x": 16, "y": 16 } }, "actions": ["open-settings"] },
+    { "id": "orb", "type": "animated-orb", "position": { "anchor": "center", "size": 320 },
+      "bindings": { "amplitude": "mic.level", "stateColor": { "idle": "#4b7cff", "listening": "#6ea8ff", "thinking": "#7a88ff", "speaking": "#4b7cff" } } },
+    { "id": "controls", "type": "row", "position": { "anchor": "bottom-center", "offset": { "y": 80 } }, "gap": 24,
+      "children": [
+        { "id": "mic", "type": "circular-button", "icon": "mic", "size": 64, "actions": ["toggle-listen"] },
+        { "id": "cancel", "type": "circular-button", "icon": "x", "size": 64, "actions": ["stop-all"] }
+      ] },
+    { "id": "info", "type": "icon", "icon": "info", "position": { "anchor": "center", "offset": { "y": 145 } }, "tooltip": "Tap mic to speak" }
+  ],
+  "state": { "mode": "idle", "muted": false, "autoContinue": true, "vadThreshold": 0.015 }
+}

@@ -7,3 +7,6 @@ node_modules
 .vercel
 out.mp3
 test-output.mp3
+.env.local
+
+.env.*.local
