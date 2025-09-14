@@ -1,7 +1,7 @@
 // Single TTS client wrapper - ONLY use this for TTS
 // NO FALLBACKS - if this fails, the error should surface
 
-export async function tts(text: string, format: 'mp3'|'wav'='mp3'): Promise<Blob|Buffer> {
+export async function tts(text: string, format: 'mp3'|'wav'='mp3'): Promise<Blob> {
   const res = await fetch('http://tts-api.odia.dev/voice/synthesize', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -10,5 +10,5 @@ export async function tts(text: string, format: 'mp3'|'wav'='mp3'): Promise<Blob
   if (!res.ok) throw new Error(`TTS ${res.status}`);
   const ct = res.headers.get('content-type') || 'audio/mpeg';
   const buf = await res.arrayBuffer();
-  return typeof window !== 'undefined' ? new Blob([buf], { type: ct }) : Buffer.from(buf);
+  return new Blob([buf], { type: ct });
 }

@@ -1,7 +1,7 @@
 ﻿"use client";
 import dynamic from "next/dynamic";
-const VoiceOnlyUI = dynamic(() => import("../../components/VoiceOnlyUI"), { ssr: false });
+const UnifiedVoiceUI = dynamic(() => import("../../components/UnifiedVoiceUI"), { ssr: false });
 
 export default function Page() {
-  return <VoiceOnlyUI />;
+  return <UnifiedVoiceUI />;
 }
