@@ -1,14 +1,12 @@
-// Single TTS client wrapper - ONLY use this for TTS
-// NO FALLBACKS - if this fails, the error should surface
+// lib/ttsClient.ts
+export async function synthToUrl(text: string, format: "mp3" | "wav" = "mp3") {
+  const base = process.env.NEXT_PUBLIC_TTS_URL || "/api/tts";
+  const u = new URL(base, typeof window !== "undefined" ? window.location.origin : "http://localhost");
+  u.searchParams.set("text", text);
+  u.searchParams.set("format", format);
 
-export async function tts(text: string, format: 'mp3'|'wav'='mp3'): Promise<Blob> {
-  const res = await fetch('http://tts-api.odia.dev/voice/synthesize', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, voice_id:'naija_male_warm', format })
-  });
-  if (!res.ok) throw new Error(`TTS ${res.status}`);
-  const ct = res.headers.get('content-type') || 'audio/mpeg';
-  const buf = await res.arrayBuffer();
-  return new Blob([buf], { type: ct });
+  const r = await fetch(u.toString(), { method: "GET" });
+  if (!r.ok) throw new Error("TTS_FAILED");
+  const blob = await r.blob();
+  return URL.createObjectURL(blob);
 }

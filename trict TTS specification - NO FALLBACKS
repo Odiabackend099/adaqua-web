@@ -1,0 +1,55 @@
+[35m.cursorrules[m[36m:[m[32m4[m[36m:[m- TTS: USE ONLY this endpoint → http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m
+[35m.github/workflows/guardrails.yml[m[36m:[m[32m12[m[36m:[m          if grep -r -i "speechSynthesis\|webkitSpeechRecognition\|elevenlabs\|polly\|gtts\|[1;31medge-tts[m" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . --exclude-dir=node_modules --exclude-dir=_archive; then
+[35m.github/workflows/guardrails.yml[m[36m:[m[32m13[m[36m:[m            echo "❌ Found banned TTS APIs. Only use [1;31mtts-api.odia.dev[m endpoint."
+[35m.github/workflows/guardrails.yml[m[36m:[m[32m22[m[36m:[m          if grep -r "https\?://[^\"]*[1;31m/voice/synthesize[m" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . --exclude-dir=node_modules --exclude-dir=_archive | grep -v "tts-api\.odia\.dev"; then
+[35m.github/workflows/guardrails.yml[m[36m:[m[32m23[m[36m:[m            echo "❌ Found alternate TTS endpoints. Only use [1;31mtts-api.odia.dev[m"
+[35mCLEANUP-SUMMARY.md[m[36m:[m[32m41[m[36m:[m- `[1;31medge-tts[m`
+[35mCLEANUP-SUMMARY.md[m[36m:[m[32m49[m[36m:[m- ✅ `http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m`
+[35mCLEANUP-SUMMARY.md[m[36m:[m[32m98[m[36m:[m- ✅ **Single TTS endpoint** - Only [1;31mtts-api.odia.dev[m
+[35mCLEANUP-SUMMARY.md[m[36m:[m[32m105[m[36m:[m1. **Deploy** the strict TTS server to `[1;31mtts-api.odia.dev[m`
+[35mCOMPREHENSIVE-TEST-RESULTS.md[m[36m:[m[32m15[m[36m:[m- **ODIADEV TTS**: Connected to `http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m`
+[35mLIVE-AUDIO-TEST-RESULTS.md[m[36m:[m[32m8[m[36m:[m   - URL: `http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m`
+[35mSTRICT-RULES.md[m[36m:[m[32m6[m[36m:[m- **ONLY** use: `http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m`
+[35mSTRICT-RULES.md[m[36m:[m[32m44[m[36m:[mgrep -r "https\?://[^\"]*[1;31m/voice/synthesize[m" --include="*.ts" --include="*.tsx" . | grep -v "[1;31mtts-api.odia.dev[m"
+[35mSTRICT-RULES.md[m[36m:[m[32m73[m[36m:[m- [ ] Only `[1;31mtts-api.odia.dev[m` endpoint used
+[35madaqua-setup.ps1[m[36m:[m[32m43[m[36m:[mADAQUA_TTS_BASE=https://[1;31mtts-api.odia.dev[m
+[35madaqua-setup.ps1[m[36m:[m[32m57[m[36m:[m    this.ttsBase   = (opts.ttsBase   || process.env.ADAQUA_TTS_BASE   || "https://[1;31mtts-api.odia.dev[m").replace(/\/+$/,"");
+[35mapp_disabled/api/brain-tts/route.ts[m[36m:[m[32m8[m[36m:[m    const up = await fetch(`${base}[1;31m/voice/synthesize[m`,{
+[35mdocs/SUCCESS-CHECKLIST.md[m[36m:[m[32m49[m[36m:[m- **TTS Endpoint**: ✅ RESOLVED - `https://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m` returns 404, proxy correctly detects and reports this. App continues with stub responses.
+[35menv.example[m[36m:[m[32m6[m[36m:[mTTS_UPSTREAM_URL=http://[1;31mtts-api.odia.dev[m
+[35menv.example[m[36m:[m[32m7[m[36m:[mTTS_UPSTREAM_PATH=[1;31m/voice/synthesize[m
+[35mlib/adaqua-ai.js[m[36m:[m[32m4[m[36m:[m    this.ttsBase = (opts.ttsBase || process.env.ADAQUA_TTS_BASE || "https://[1;31mtts-api.odia.dev[m").replace(/\/+$/, "");
+[35mlib/adaqua-ai.ts[m[36m:[m[32m10[m[36m:[m  ttsBase?: string;    // default: process.env.ADAQUA_TTS_BASE   || https://[1;31mtts-api.odia.dev[m
+[35mlib/adaqua-ai.ts[m[36m:[m[32m26[m[36m:[m      ttsBase:   process.env.ADAQUA_TTS_BASE   || "https://[1;31mtts-api.odia.dev[m",
+[35mlib/adaqua-ai.ts[m[36m:[m[32m34[m[36m:[m    this.ttsBase   = (opts.ttsBase   || "https://[1;31mtts-api.odia.dev[m").replace(/\/+$/,"");
+[35mpages/api/brain-tts.ts[m[36m:[m[32m16[m[36m:[m    const up = await fetch(`${base}[1;31m/voice/synthesize[m`, {
+[35mpages/api/voice.js[m[36m:[m[32m18[m[36m:[m    const url = "http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m";
+[35mprd.txt[m[36m:[m[32m103[m[36m:[m4. **Server TTS proxy** at `/api/tts` → **Austyn’s TTS** (`https://[1;31mtts-api.odia.dev[m`).
+[35mprd.txt[m[36m:[m[32m105[m[36m:[m   * **Do not guess** endpoints beyond the **expected** `[1;31m/voice/synthesize[m`. If upstream returns Not Found, return a structured error `{ok:false, error:"tts_endpoint_unknown"}` and surface S1 fail.
+[35mprd.txt[m[36m:[m[32m143[m[36m:[m  * `pages/api/tts.ts` → **proxy** to `https://[1;31mtts-api.odia.dev[m`
+[35mprd.txt[m[36m:[m[32m208[m[36m:[m* `pages/api/tts.ts` – server proxy to `https://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m` (**only**; if 404, report unknown)
+[35mprd.txt[m[36m:[m[32m236[m[36m:[m* **Unknown TTS path** at `[1;31mtts-api.odia.dev[m`.
+[35mprd.txt[m[36m:[m[32m237[m[36m:[m  *Mitigation:* Fail clearly with `tts_endpoint_unknown`; keep loop functional with text stream; request exact synth path (expected `[1;31m/voice/synthesize[m`).
+[35mprd.txt[m[36m:[m[32m262[m[36m:[m1. **Exact synth path** on `https://[1;31mtts-api.odia.dev[m` (default attempt: `[1;31m/voice/synthesize[m`).
+[35mscripts/dev.ps1[m[36m:[m[32m58[m[36m:[mTTS_API_URL=https://[1;31mtts-api.odia.dev[m
+[35mscripts/enforce-rules.ps1[m[36m:[m[32m14[m[36m:[m    "[1;31medge-tts[m",
+[35mscripts/enforce-rules.ps1[m[36m:[m[32m45[m[36m:[m    Select-String -Pattern "https?://[^\"]*[1;31m/voice/synthesize[m" |
+[35mscripts/enforce-rules.ps1[m[36m:[m[32m46[m[36m:[m    Where-Object { $_.Line -notlike "*[1;31mtts-api.odia.dev[m*" }
+[35mscripts/smoke.ps1[m[36m:[m[32m44[m[36m:[m        Write-Host "      Expected: https://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m" -ForegroundColor Yellow
+[35mscripts/smoke.ps1[m[36m:[m[32m176[m[36m:[m    Write-Host "   - TTS endpoint unknown: Check if https://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m exists" -ForegroundColor Yellow
+[35mserver.cjs[m[36m:[m[32m55[m[36m:[m    if (url.pathname === '[1;31m/voice/synthesize[m') {
+[35mtestsprite_tests/VOICE-ASSISTANT-TEST-REPORT.md[m[36m:[m[32m8[m[36m:[m- **ODIADEV TTS**: Connected to `http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m`
+[35mtestsprite_tests/VOICE-ASSISTANT-TEST-REPORT.md[m[36m:[m[32m80[m[36m:[m- ✅ TTS: `http://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m`
+[35mtestsprite_tests/testsprite-mcp-test-report.html[m[36m:[m[32m168[m[36m:[m<li><strong>Test Error:</strong> The /api/tts endpoint could not be verified as it returns 404 Not Found errors on all tested URLs including localhost and [1;31mtts-api.odia.dev[m. No playable audio was received and TTFB could not be measured within 3 seconds. The endpoint appears to be unavailable or misconfigured.</li>
+[35mtestsprite_tests/testsprite-mcp-test-report.html[m[36m:[m[32m341[m[36m:[m<li><strong>Root Cause:</strong> Upstream TTS service <code>https://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m</code> is unavailable</li>
+[35mtestsprite_tests/testsprite-mcp-test-report.html[m[36m:[m[32m365[m[36m:[m<li>Confirm correct TTS endpoint path on <code>https://[1;31mtts-api.odia.dev[m</code></li>
+[35mtestsprite_tests/testsprite-mcp-test-report.md[m[36m:[m[32m124[m[36m:[m- **Test Error:** The /api/tts endpoint could not be verified as it returns 404 Not Found errors on all tested URLs including localhost and [1;31mtts-api.odia.dev[m. No playable audio was received and TTFB could not be measured within 3 seconds. The endpoint appears to be unavailable or misconfigured.
+[35mtestsprite_tests/testsprite-mcp-test-report.md[m[36m:[m[32m255[m[36m:[m- **Root Cause:** Upstream TTS service `https://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m` is unavailable
+[35mtestsprite_tests/testsprite-mcp-test-report.md[m[36m:[m[32m274[m[36m:[m   - Confirm correct TTS endpoint path on `https://[1;31mtts-api.odia.dev[m`
+[35mtestsprite_tests/tmp/prd_files/prd.txt[m[36m:[m[32m103[m[36m:[m4. **Server TTS proxy** at `/api/tts` → **Austyn’s TTS** (`https://[1;31mtts-api.odia.dev[m`).
+[35mtestsprite_tests/tmp/prd_files/prd.txt[m[36m:[m[32m105[m[36m:[m   * **Do not guess** endpoints beyond the **expected** `[1;31m/voice/synthesize[m`. If upstream returns Not Found, return a structured error `{ok:false, error:"tts_endpoint_unknown"}` and surface S1 fail.
+[35mtestsprite_tests/tmp/prd_files/prd.txt[m[36m:[m[32m143[m[36m:[m  * `pages/api/tts.ts` → **proxy** to `https://[1;31mtts-api.odia.dev[m`
+[35mtestsprite_tests/tmp/prd_files/prd.txt[m[36m:[m[32m208[m[36m:[m* `pages/api/tts.ts` – server proxy to `https://[1;31mtts-api.odia.dev[m[1;31m/voice/synthesize[m` (**only**; if 404, report unknown)
+[35mtestsprite_tests/tmp/prd_files/prd.txt[m[36m:[m[32m236[m[36m:[m* **Unknown TTS path** at `[1;31mtts-api.odia.dev[m`.
+[35mtestsprite_tests/tmp/prd_files/prd.txt[m[36m:[m[32m237[m[36m:[m  *Mitigation:* Fail clearly with `tts_endpoint_unknown`; keep loop functional with text stream; request exact synth path (expected `[1;31m/voice/synthesize[m`).
+[35mtestsprite_tests/tmp/prd_files/prd.txt[m[36m:[m[32m262[m[36m:[m1. **Exact synth path** on `https://[1;31mtts-api.odia.dev[m` (default attempt: `[1;31m/voice/synthesize[m`).

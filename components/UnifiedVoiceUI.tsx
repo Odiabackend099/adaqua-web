@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { tts } from '../lib/ttsClient';
+import { synthToUrl } from '../lib/ttsClient';
 
 // Type declarations for Web Speech API
 declare global {
@@ -249,11 +249,11 @@ const UnifiedVoiceUI: React.FC<UnifiedVoiceUIProps> = ({ className = '', enableC
   const speakText = async (text: string) => {
     try {
       // Use our strict TTS client - NO FALLBACKS
-      const audioBlob = await tts(text, 'mp3');
+      const audioUrl = await synthToUrl(text, 'mp3');
       
       // Create audio element and play
       const audio = new Audio();
-      audio.src = URL.createObjectURL(audioBlob);
+      audio.src = audioUrl;
       
       audio.onended = () => {
         setMode('listening');

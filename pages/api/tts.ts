@@ -1,127 +1,39 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export const config = { 
-  api: { 
-    bodyParser: true,
-    responseLimit: false 
-  } 
-};
+export const config = { api: { responseLimit: false } };
+
+const UPSTREAM = process.env.TTS_UPSTREAM_URL!;
+const PATH     = process.env.TTS_UPSTREAM_PATH!;
+const TIMEOUT  = Number(process.env.TTS_REQUEST_TIMEOUT_MS || 30000);
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // STRICT: Only proxy to tts-api.odia.dev - NO FALLBACKS
-  const ttsApiUrl = "http://tts-api.odia.dev";
-  const defaultVoiceId = "naija_male_warm";
-
   try {
-    // Handle GET request with text query parameter
-    if (req.method === "GET") {
-      const text = req.query.text as string;
-      if (!text) {
-        return res.status(400).json({ ok: false, error: "text parameter required" });
-      }
+    const text   = (String(req.query.text || "")).trim();
+    const format = String(req.query.format || process.env.TTS_DEFAULT_FORMAT || "mp3").toLowerCase();
+    const voice  = String(req.query.voice  || process.env.TTS_DEFAULT_VOICE  || "naija_male_warm");
 
-      const response = await fetch(`${ttsApiUrl}/voice/synthesize`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          text,
-          voice_id: defaultVoiceId,
-          format: "mp3"
-        })
-      });
+    if (!text) return res.status(400).json({ ok: false, error: "MISSING_TEXT" });
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => "");
-        return res.status(502).json({ 
-          ok: false, 
-          error: "upstream_error", 
-          status: response.status,
-          detail: errorText.slice(0, 200)
-        });
-      }
+    const url = new URL(PATH, UPSTREAM);
+    url.searchParams.set("text", text);
+    url.searchParams.set("format", format);
+    url.searchParams.set("voice", voice);
 
-      // Set appropriate content type
-      const contentType = response.headers.get("content-type") || "audio/mpeg";
-      res.setHeader("Content-Type", contentType);
-      
-      // Stream the audio data
-      const reader = response.body?.getReader();
-      if (!reader) {
-        return res.status(502).json({ ok: false, error: "no_response_body" });
-      }
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), TIMEOUT);
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        res.write(Buffer.from(value));
-      }
-      res.end();
-      return;
+    const up = await fetch(url.toString(), { method: "GET", signal: ctrl.signal });
+    clearTimeout(timer);
+
+    if (!up.ok) {
+      const body = await up.text().catch(() => "");
+      return res.status(502).json({ ok: false, error: "UPSTREAM_FAILED", status: up.status, body });
     }
 
-    // Handle POST request with JSON body
-    if (req.method === "POST") {
-      const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-      const { text, voice_id, format = "mp3" } = body;
-
-      if (!text) {
-        return res.status(400).json({ ok: false, error: "text field required" });
-      }
-
-      const response = await fetch(`${ttsApiUrl}/voice/synthesize`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          text,
-          voice_id: voice_id || defaultVoiceId,
-          format
-        })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => "");
-        return res.status(502).json({ 
-          ok: false, 
-          error: "upstream_error", 
-          status: response.status,
-          detail: errorText.slice(0, 200)
-        });
-      }
-
-      // Set appropriate content type
-      const contentType = response.headers.get("content-type") || 
-        (format === "wav" ? "audio/wav" : "audio/mpeg");
-      res.setHeader("Content-Type", contentType);
-      
-      // Stream the audio data
-      const reader = response.body?.getReader();
-      if (!reader) {
-        return res.status(502).json({ ok: false, error: "no_response_body" });
-      }
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        res.write(Buffer.from(value));
-      }
-      res.end();
-      return;
-    }
-
-    // Method not allowed
-    res.setHeader("Allow", ["GET", "POST"]);
-    res.status(405).json({ ok: false, error: "method_not_allowed" });
-
-  } catch (error: any) {
-    console.error("TTS API Error:", error);
-    res.status(500).json({ 
-      ok: false, 
-      error: "server_error", 
-      message: error?.message || "Internal server error" 
-    });
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Content-Type", up.headers.get("content-type") || (format === "wav" ? "audio/wav" : "audio/mpeg"));
+    up.body?.pipe(res);
+  } catch (err: any) {
+    return res.status(500).json({ ok: false, error: "PROXY_ERROR", message: String(err?.message || err) });
   }
 }
