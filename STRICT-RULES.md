@@ -1,9 +1,9 @@
 # ODIADEV Voice Assistant - STRICT RULES
 
-## 🚫 NON-NEGOTIABLE RULES
+## Ã°Å¸Å¡Â« NON-NEGOTIABLE RULES
 
 ### 1. TTS Endpoint
-- **ONLY** use: `http://tts-api.odia.dev/voice/synthesize`
+- **ONLY** use: `/api/tts`
 - Method: POST
 - Body: `{ "text": string, "voice_id": "naija_male_warm", "format": "mp3" }`
 - **NO** other vendors, SDKs, or browser speech APIs
@@ -16,8 +16,8 @@
 
 ### 3. Error Handling
 - **NO** fallbacks or silent failures
-- If TTS fails → surface the error
-- If API fails → surface the error
+- If TTS fails Ã¢â€ â€™ surface the error
+- If API fails Ã¢â€ â€™ surface the error
 - **NO** browser speech synthesis fallbacks
 
 ### 4. TTS Client
@@ -25,7 +25,7 @@
 - **NO** direct fetch calls to TTS
 - **NO** multiple TTS implementations
 
-## 🔧 Enforcement
+## Ã°Å¸â€Â§ Enforcement
 
 ### Automated Checks
 - CI/CD pipeline runs `scripts/enforce-rules.ps1`
@@ -38,37 +38,37 @@
 .\scripts\enforce-rules.ps1
 
 # Check for banned APIs
-grep -r "speechSynthesis\|webkitSpeechRecognition" --include="*.ts" --include="*.tsx" .
+grep -r "// REMOVED: NO_FALLBACKS\|webkitSpeechRecognition" --include="*.ts" --include="*.tsx" .
 
 # Check for alternate endpoints  
 grep -r "https\?://[^\"]*/voice/synthesize" --include="*.ts" --include="*.tsx" . | grep -v "tts-api.odia.dev"
 ```
 
-## 📁 File Structure
+## Ã°Å¸â€œÂ File Structure
 
 ```
-├── .cursorrules                    # Cursor AI rules
-├── .github/workflows/guardrails.yml # CI enforcement
-├── server.cjs                     # Strict TTS server (no fallbacks)
-├── lib/
-│   ├── ttsClient.ts              # ONLY TTS client (no fallbacks)
-│   └── tts.ts                    # Deprecated (redirects to ttsClient)
-├── components/
-│   └── UnifiedVoiceUI.tsx        # ONLY UI component
-├── pages/
-│   ├── voice.tsx                 # Uses UnifiedVoiceUI
-│   └── voice-recording.tsx       # Uses UnifiedVoiceUI (call mode)
-└── _archive/ui_dupes/            # Archived duplicate UIs
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ .cursorrules                    # Cursor AI rules
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ .github/workflows/guardrails.yml # CI enforcement
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ server.cjs                     # Strict TTS server (no fallbacks)
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ lib/
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ ttsClient.ts              # ONLY TTS client (no fallbacks)
+Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ tts.ts                    # Deprecated (redirects to ttsClient)
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ components/
+Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ UnifiedVoiceUI.tsx        # ONLY UI component
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ pages/
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ voice.tsx                 # Uses UnifiedVoiceUI
+Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ voice-recording.tsx       # Uses UnifiedVoiceUI (call mode)
+Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ _archive/ui_dupes/            # Archived duplicate UIs
 ```
 
-## 🚨 What Happens on Violation
+## Ã°Å¸Å¡Â¨ What Happens on Violation
 
 1. **CI/CD fails** - Build stops
 2. **PR rejected** - Cannot merge
 3. **Error surfaced** - No silent failures
 4. **Manual review** - Human intervention required
 
-## ✅ Success Criteria
+## Ã¢Å“â€¦ Success Criteria
 
 - [ ] Only `tts-api.odia.dev` endpoint used
 - [ ] Only `UnifiedVoiceUI.tsx` component used  
@@ -77,7 +77,7 @@ grep -r "https\?://[^\"]*/voice/synthesize" --include="*.ts" --include="*.tsx" .
 - [ ] All errors properly surfaced
 - [ ] CI/CD passes all checks
 
-## 🔄 Migration Guide
+## Ã°Å¸â€â€ž Migration Guide
 
 ### From Old TTS
 ```typescript
@@ -100,7 +100,7 @@ import VoiceOnlyUI from '../components/VoiceOnlyUI';
 import UnifiedVoiceUI from '../components/UnifiedVoiceUI';
 ```
 
-## 📞 Support
+## Ã°Å¸â€œÅ¾ Support
 
 If you need to add new features:
 1. **Modify** `UnifiedVoiceUI.tsx` (don't create new UIs)
