@@ -1,39 +1,34 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-export const config = { api: { responseLimit: false } };
-
-const UPSTREAM = process.env.TTS_UPSTREAM_URL!;
-const PATH     = process.env.TTS_UPSTREAM_PATH!;
-const TIMEOUT  = Number(process.env.TTS_REQUEST_TIMEOUT_MS || 30000);
+const BASE = process.env.TTS_API_BASE || "http://tts-api.odia.dev"; // server -> server only
+const PATH = "/voice/synthesize";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const text   = (String(req.query.text || "")).trim();
-    const format = String(req.query.format || process.env.TTS_DEFAULT_FORMAT || "mp3").toLowerCase();
-    const voice  = String(req.query.voice  || process.env.TTS_DEFAULT_VOICE  || "naija_male_warm");
+    const method = req.method || "GET";
+    if (!["GET","POST"].includes(method)) {
+      res.setHeader("Allow", "GET, POST");
+      return res.status(405).json({ ok:false, error:"method_not_allowed" });
+    }
+    const text   = (method === "POST" ? (req.body?.text ?? "")   : (req.query.text as string)   )?.toString() || "";
+    const format = (method === "POST" ? (req.body?.format ?? "") : (req.query.format as string) )?.toString().toLowerCase() || "mp3";
 
-    if (!text) return res.status(400).json({ ok: false, error: "MISSING_TEXT" });
+    if (!text) return res.status(400).json({ ok:false, error:"text_required" });
+    if (!["mp3","wav"].includes(format)) return res.status(400).json({ ok:false, error:"bad_format" });
 
-    const url = new URL(PATH, UPSTREAM);
-    url.searchParams.set("text", text);
-    url.searchParams.set("format", format);
-    url.searchParams.set("voice", voice);
+    const url = `${BASE}${PATH}?text=${encodeURIComponent(text)}&format=${format}`;
+    const upstream = await fetch(url, { method:"GET", cache:"no-store", headers:{ "Accept":"*/*" } });
 
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), TIMEOUT);
-
-    const up = await fetch(url.toString(), { method: "GET", signal: ctrl.signal });
-    clearTimeout(timer);
-
-    if (!up.ok) {
-      const body = await up.text().catch(() => "");
-      return res.status(502).json({ ok: false, error: "UPSTREAM_FAILED", status: up.status, body });
+    if (!upstream.ok) {
+      const msg = await upstream.text();
+      return res.status(upstream.status).json({ ok:false, error:"tts_upstream_failed", detail: msg.slice(0,500) });
     }
 
+    const buf = Buffer.from(await upstream.arrayBuffer());
     res.setHeader("Cache-Control", "no-store");
-    res.setHeader("Content-Type", up.headers.get("content-type") || (format === "wav" ? "audio/wav" : "audio/mpeg"));
-    up.body?.pipe(res);
-  } catch (err: any) {
-    return res.status(500).json({ ok: false, error: "PROXY_ERROR", message: String(err?.message || err) });
+    res.setHeader("Content-Type", format === "wav" ? "audio/wav" : "audio/mpeg");
+    return res.status(200).send(buf);
+  } catch (e:any) {
+    return res.status(502).json({ ok:false, error:"tts_proxy_error", detail:String(e?.message||e).slice(0,500) });
   }
 }
