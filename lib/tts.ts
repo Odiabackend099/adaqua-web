@@ -1,19 +1,6 @@
-// DEPRECATED: Use lib/ttsClient.ts instead
-// This file is kept for backward compatibility but should not be used
+/** Back-compat shim. Prefer importing from "./ttsClient". */
+export { synth as synthesizeSpeech, synth as speak, synth as testTTS, synthToUrl } from "./ttsClient";
 
-export { tts as synthesizeSpeech, tts as speak } from './ttsClient';
-export { tts as testTTS } from './ttsClient';
-
-export function getAvailableVoices(): Array<{id: string, name: string, language: string}> {
-  return [
-    {
-      id: "naija_male_warm",
-      name: "Nigerian Male (Warm)",
-      language: "en-NG"
-    }
-  ];
-}
-
-export function getDefaultVoiceId(): string {
-  return "naija_male_warm";
-}
+/** No browser fallbacks anymore. */
+export type VoiceInfo = { id: string; name: string; language: string };
+export function getAvailableVoices(): VoiceInfo[] { return []; }
