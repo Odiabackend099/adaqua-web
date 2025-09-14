@@ -9,10 +9,12 @@ export async function synth(text: string, format: "mp3" | "wav" = "mp3"): Promis
 
 export async function synthToUrl(text: string, format: "mp3" | "wav" = "mp3"): Promise<string> {
   const blob = await synth(text, format);
-  return URL.createObjectURL(blob);
+  // Browser-only. Avoid TS DOM typings by using globalThis as any.
+  const create: ((b: Blob) => string) | undefined = (globalThis as any)?.URL?.createObjectURL;
+  if (!create) throw new Error("blob_url_not_supported_in_this_env");
+  return create(blob);
 }
 
-/** Optional helper to free blob URLs you no longer need */
 export function revokeObjectUrl(url?: string) {
-  try { if (url && url.startsWith("blob:")) URL.revokeObjectURL(url); } catch {}
+  try { if (url && url.startsWith("blob:")) (globalThis as any)?.URL?.revokeObjectURL?.(url); } catch {}
 }
