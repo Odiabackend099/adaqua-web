@@ -8,5 +8,7 @@ node_modules
 out.mp3
 test-output.mp3
 .env.local
-
 .env.*.local
+
+# Archive directory - excluded from build
+_archive/
