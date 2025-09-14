@@ -18,3 +18,5 @@ export async function synthToUrl(text: string, format: "mp3" | "wav" = "mp3"): P
 export function revokeObjectUrl(url?: string) {
   try { if (url && url.startsWith("blob:")) (globalThis as any)?.URL?.revokeObjectURL?.(url); } catch {}
 }
+export const tts = synth;
+
